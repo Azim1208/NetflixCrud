@@ -4,7 +4,6 @@ import { catchAsync } from "../middlewares/catch-async.js";
 import { ApiError } from "../utils/custom-error.js";
 import { successRes } from "../utils/success-response.js";
 
-
 export class BaseController {
     constructor(model, relation) {
         this.model = model;
@@ -49,5 +48,12 @@ export class BaseController {
             throw new ApiError('Not found', 404);
         }
         return data;
+    }
+
+    async _isExist( property, message ) {
+        const existData = await this.model.findOne(property);
+        if(existData){
+            throw new ApiError(`${message} already exists`, 409)
+        }
     }
 }

@@ -1,18 +1,21 @@
 import express from "express"
-import { config } from 'dotenv'
-config();
+import cookieParser from "cookie-parser";
 
+import { envConfig } from './config/index.js'
 import { connectDB } from "./config/db.js";
 import router from './routes/index.route.js';
+import { ApiError } from "./utils/custom-error.js";
 import { errorHandle } from './middlewares/error-handle.js';
-
+import { createSuperAdmin } from './helpers/create-superadmin.js'
 
 const app = express();
-const PORT = Number(process.env.PORT);
+const PORT = envConfig.PORT;
 
 app.use(express.json())
+app.use(cookieParser())
 
 await connectDB();
+await createSuperAdmin()
 
 app.use('/api', router);
 
